@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getMissionRewards } from "../../Actions/Actions.js";
-import {
-  ItemDropInfo,
-  getRewardChanceFromArray,
-  getRewardInfo,
-} from "../../Lib/Helpers/Funciones.js";
+import { ItemDropInfo, checkOver10 } from "../../Lib/Helpers/Funciones.js";
 import "./Relicdetails.css";
 
 export default function Relicdetails() {
@@ -47,6 +43,8 @@ export default function Relicdetails() {
 
             Mission: mission.missionName,
 
+            MissionType: mission.missionType,
+
             Chance: mission.chance.A
               ? `Rotation A: ${mission.chance.A}`
               : mission.chance.B
@@ -61,6 +59,8 @@ export default function Relicdetails() {
 
             Mission: mission.missionName,
 
+            MissionType: mission.missionType,
+
             Chance: mission.chance,
           };
 
@@ -69,38 +69,43 @@ export default function Relicdetails() {
       });
     });
     setData(result);
-    // console.log(data);
   }
 
   return (
     <div className="container">
-      <button>
-        <h1> {"<--"} </h1>
-      </button>
-      <h1> {relicName} </h1>
-      <table>
-        <tr>
-          <th> Planet </th>
-          <th> Mission </th>
-          <th> Chance </th>
-        </tr>
-        {data.length > 0 ? (
-          data.map((e) => {
+      <h1 className="relicname"> {relicName} </h1>
+      {data.length > 0 ? (
+        <table>
+          <tr>
+            <th> Planet </th>
+            <th> Mission </th>
+            <th> Mission Type </th>
+            <th> Chance </th>
+          </tr>
+          {data.map((e) => {
+            console.log(e.Chance);
             return (
               <>
-                <tr>
-                  <td>{e.Planet}</td>
+                <tr
+                  className={
+                    e.MissionType === "Disruption" && checkOver10(e.Chance)
+                      ? "easy"
+                      : null
+                  }
+                >
+                  <td> {e.Planet} </td>
                   <td> {e.Mission} </td>
+                  <td> {e.MissionType} </td>
                   <td> {e.Chance}% </td>
                 </tr>
                 <br />
               </>
             );
-          })
-        ) : (
-          <h1>The Relic is Vaulted</h1>
-        )}
-      </table>
+          })}
+        </table>
+      ) : (
+        <h1>The relic is Vaulted</h1>
+      )}
     </div>
   );
 }

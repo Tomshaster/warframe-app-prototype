@@ -3,3 +3,25 @@
   flex-direction: column;
   align-items: center;
 }
+.vault {
+  display: none;
+}
+td {
+  padding: 10px;
+}
+
+table,
+th,
+td {
+  border: 1px solid;
+  color: white;
+  border-radius: 3px;
+}
+a {
+  color: rgb(137, 137, 255);
+}
+
+.vaulted {
+  background-color: red;
+  color: black;
+}

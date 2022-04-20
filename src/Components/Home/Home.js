@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { getAllRelics, lockSearch } from "../../Actions/Actions.js";
+import {
+  getAllRelics,
+  lockSearch,
+  getMissionRewards,
+} from "../../Actions/Actions.js";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { checkVaulted } from "../../Lib/Helpers/Funciones.js";
 import "./Home.css";
 
 export default function Home(props) {
+  const missions = useSelector((state) => state.missionRewards);
   const relics = useSelector((state) => state.relics);
-  const dispatch = useDispatch();
   const lock = useSelector((state) => state.search);
+  const dispatch = useDispatch();
+  const [vault, setVault] = useState(false);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([]);
 
   useEffect(() => {
     // console.log(relics);
     dispatch(getAllRelics());
+    dispatch(getMissionRewards());
     setSearch(lock);
+    console.log(missions);
   }, []);
 
   useEffect(() => {
     list();
   }, [search]);
+
+  function toggleVault() {
+    setVault(!vault);
+  }
 
   function handleChange(e) {
     setSearch(e.target.value);
@@ -71,12 +84,25 @@ export default function Home(props) {
 
     // Un-nest the array
     let fullChance = cont.map((r) => r[0]);
-    // console.log(fullChance);
+
+    // Check vaulted
+    fullChance.forEach((r) => {
+      let check = [];
+      let relic = r.tier + " " + r.relicName + " Relic";
+      Object.values(missions).forEach((planet) => {
+        check.push(checkVaulted(planet, relic));
+      });
+      if (!check.includes(false)) {
+        r.vaulted = true;
+      }
+      // console.log(check);
+    });
     setFiltered(fullChance);
   }
 
   return (
     <div className="container">
+      <h1>Warframe Prime Relic Finder</h1>
       <form>
         <input
           type="text"
@@ -86,11 +112,15 @@ export default function Home(props) {
         />
         {/* <button>Buscar</button> */}
       </form>
+      <button onClick={toggleVault}>
+        {vault ? "Hide Vaulted" : "View Vaulted"}
+      </button>
       <table>
         <tr>
-          <th> Parte </th>
-          <th> Reliquia </th>
+          <th> Part </th>
+          <th> Relic </th>
           <th> Chance </th>
+          <th> Vaulted </th>
         </tr>
 
         {filtered.map((r) => {
@@ -101,7 +131,7 @@ export default function Home(props) {
           // console.log(relic);
           return (
             <>
-              <tr>
+              <tr className={r.vaulted && !vault ? "vault" : "novault"}>
                 <td> {item.itemName}</td>
                 <td>
                   <Link to={`details/${relic}`}>
@@ -110,8 +140,10 @@ export default function Home(props) {
                   - {r.state}
                 </td>
                 <td>{item.chance}%</td>
+                <td className={r.vaulted ? "vaulted" : null}>
+                  {r.vaulted ? "Yes" : "No"}
+                </td>
               </tr>
-              <br />
             </>
           );
         })}

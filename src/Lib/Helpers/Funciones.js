@@ -12,7 +12,11 @@ function ItemDropInfo(planet, item) {
     // console.log(`Mission: ${Object.keys(planet)[i]} Reward: ${rewardInfo}`);
     // console.log(rewardInfo);
     if (rewardInfo) {
-      result.push({ missionName: Object.keys(planet)[i], chance: rewardInfo });
+      result.push({
+        missionName: Object.keys(planet)[i],
+        chance: rewardInfo,
+        missionType: mission.gameMode,
+      });
     }
   });
   return result;
@@ -64,6 +68,33 @@ function getRewardChanceFromArray(rewardsArray, item) {
   }
   return null;
 }
+function checkVaulted(planet, relic) {
+  let vaulted = false;
+  if (ItemDropInfo(planet, relic).length < 1) {
+    vaulted = true;
+  }
+  return vaulted;
+}
 
-// console.log(ItemDropInfo(ceres, "Axi C7 Relic"));
-export { ItemDropInfo, getRewardChanceFromArray, getRewardInfo };
+function checkOver10(chance) {
+  let result = false;
+  if (isNaN(chance)) {
+    let number = chance.split(" ");
+    number = number.pop();
+    if (number > 10) result = true;
+  } else {
+    if (chance > 10) result = true;
+  }
+  return result;
+}
+
+// let relic = "Axi C7 Relic";
+// console.log(ItemDropInfo(ceres, relic));
+// console.log(checkVaulted(ceres, relic));
+export {
+  ItemDropInfo,
+  getRewardChanceFromArray,
+  getRewardInfo,
+  checkVaulted,
+  checkOver10,
+};
