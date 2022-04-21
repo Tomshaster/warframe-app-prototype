@@ -2,12 +2,14 @@ import {
   GET_ALL_RELICS,
   GET_MISSION_REWARDS,
   LOCK_SEARCH,
+  SET_WISHLIST,
 } from "../Actions/Actions.js";
 
 const initialState = {
   relics: [],
   missionRewards: {},
   search: "",
+  favRelics: [],
 };
 
 export default function rootReducer(state = initialState, action) {
@@ -26,6 +28,11 @@ export default function rootReducer(state = initialState, action) {
       return {
         ...state,
         search: action.payload,
+      };
+    case SET_WISHLIST:
+      return {
+        ...state,
+        favRelics: state.favRelics.concat(action.payload),
       };
     default:
       return { ...state };

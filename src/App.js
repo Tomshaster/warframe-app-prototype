@@ -9,6 +9,7 @@ function App() {
     <div className="App">
       <Route path="/" exact component={Home} />
       <Route path="/details/:relicName" component={Relicdetails} />
+      <Route path
     </div>
   );
 }

@@ -1,6 +1,7 @@
 export const GET_ALL_RELICS = "GET_ALL_RELICS";
 export const GET_MISSION_REWARDS = "GET_MISSION_REWARDS";
 export const LOCK_SEARCH = "LOCK_SEARCH";
+export const SET_WISHLIST = "SET_WISHLIST";
 
 export function getAllRelics() {
   return function (dispatch) {
@@ -26,5 +27,12 @@ export function lockSearch(search) {
   return {
     type: LOCK_SEARCH,
     payload: search,
+  };
+}
+
+export function setWishlist(favRelic) {
+  return {
+    type: SET_WISHLIST,
+    payload: favRelic,
   };
 }
