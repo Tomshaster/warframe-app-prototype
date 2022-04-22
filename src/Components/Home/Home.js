@@ -3,6 +3,7 @@ import {
   getAllRelics,
   lockSearch,
   getMissionRewards,
+  setWishlist,
 } from "../../Actions/Actions.js";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -100,6 +101,14 @@ export default function Home(props) {
     setFiltered(fullChance);
   }
 
+  function addFav(item, relic) {
+    let data = {
+      item: item,
+      relic: relic,
+    };
+    dispatch(setWishlist(data));
+  }
+
   return (
     <div className="container">
       <h1>Warframe Prime Relic Finder</h1>
@@ -110,7 +119,7 @@ export default function Home(props) {
           value={search}
           placeholder="Buscar parte prime"
         />
-        {/* <button>Buscar</button> */}
+        <Link to="/wishlist">Wishlist</Link>
       </form>
       <button onClick={toggleVault}>
         {vault ? "Hide Vaulted" : "View Vaulted"}
@@ -132,7 +141,11 @@ export default function Home(props) {
           return (
             <>
               <tr className={r.vaulted && !vault ? "vault" : "novault"}>
-                <td> {item.itemName}</td>
+                <td>
+                  {" "}
+                  <button onClick={() => addFav(item, r)}>&hearts;</button>{" "}
+                  {item.itemName}
+                </td>
                 <td>
                   <Link to={`details/${relic}`}>
                     {r.tier} {r.relicName}
